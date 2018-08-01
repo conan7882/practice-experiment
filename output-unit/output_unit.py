@@ -11,7 +11,7 @@ def sigmoid(x):
     return np.exp(x) / (1 + np.exp(x))
 
 def d_logsigmoid(x):
-    return -sigmoid(-x)
+    return sigmoid(-x)
 
 def softmax(x):
     stabel_x = x - np.max(x)
