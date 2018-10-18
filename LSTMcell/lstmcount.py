@@ -3,11 +3,8 @@
 # File: lstmcount.py
 # Author: Qian Ge <geqian1001@gmail.com>
 
-# import random
-# import math
 import numpy as np
-# import matplotlib.pyplot as plt
-# import tensorflow as tf
+
 
 SMALL_NUM = 1e-6
 
@@ -41,10 +38,6 @@ class LSTMcell(object):
         f = sigmoid(np.matmul(inputs, self.wfx) + np.matmul(prev_state, self.wfh) + self.bf)
         o = sigmoid(np.matmul(inputs, self.wox) + np.matmul(prev_state, self.woh) + self.bo)
         state = np.multiply(g, i) + np.multiply(prev_state, f)
-        print(i)
-        # print('g: {:.2f}, i: {:.2f}, f: {:.2f}, o: {:.2f}, state: {:.2f}'
-        #       .format(np.squeeze(g), np.squeeze(i), np.squeeze(f), np.squeeze(o), np.squeeze(state)))
-        # print(np.matmul(inputs, self.wgx) + np.matmul(prev_state, self.wgh) + self.bg)
         return np.multiply(self._out_act(state), o)
 
     def create_cell(self, in_dim, out_dim):
@@ -78,95 +71,104 @@ def assign_weight_count_all(cell, in_dim, out_dim):
     param_dict = {}
     param_dict['wgx'] = np.zeros((in_dim, out_dim))
     param_dict['wgh'] = np.zeros((out_dim, out_dim))
-    param_dict['bg'] = 10. * np.ones((1, out_dim))
+    param_dict['bg'] = 100. * np.ones((1, out_dim))
 
-    param_dict['wix'] = [[10.] if i == 0 else [-10.] for i in range(10)]
+    param_dict['wix'] = [[100.] if i == 0 else [-100.] for i in range(10)]
     param_dict['wih'] = np.zeros((out_dim, out_dim))
     param_dict['bi'] =  np.zeros((1, out_dim))
 
     param_dict['wfx'] = np.zeros((in_dim, out_dim))
     param_dict['wfh'] = np.zeros((out_dim, out_dim))
-    param_dict['bf'] = 10. * np.ones((1, out_dim))
+    param_dict['bf'] = 100. * np.ones((1, out_dim))
 
     param_dict['wox'] = np.zeros((in_dim, out_dim))
     param_dict['woh'] = np.zeros((out_dim, out_dim))
-    param_dict['bo'] = 10. * np.ones((1, out_dim))
+    param_dict['bo'] = 100. * np.ones((1, out_dim))
 
     for key in param_dict:
         cell.set_config_by_name(key, param_dict[key])
 
 def assign_weight_count_from_2(cell, in_dim, out_dim):
     param_dict = {}
-    # param_dict['wgx'] = [[10.] if i == 0 or 2 else [-0.] for i in range(10)]
-    input_count_num = [[10.] if i == 0 else [-0.] for i in range(10)]
-    input_gate_num = [[10.] if i == 2 else [-0.] for i in range(10)]
+    input_count_num = [[100.] if i == 0 else [-0.] for i in range(10)]
+    input_gate_num = [[100.] if i == 2 else [-0.] for i in range(10)]
     param_dict['wgx'] = np.concatenate((input_count_num, input_gate_num), axis=-1)
     param_dict['wgh'] = np.zeros((out_dim, out_dim))
     param_dict['bg'] = np.zeros((1, out_dim))
 
-    input_count_num = [[10.] if i == 0 else [-10.] for i in range(10)]
-    input_gate_num = [[10.] if i == 2 else [-10.] for i in range(10)]
+    input_count_num = [[-100.] if i == 0 else [-100.] for i in range(10)]
+    input_gate_num = [[100.] if i == 2 else [-100.] for i in range(10)]
     param_dict['wix'] = np.concatenate((input_count_num, input_gate_num), axis=-1)
-    param_dict['wih'] = [[100., 100.], [0., 0.]]
+    param_dict['wih'] = [[0., 0.], [200., 200.]]
     param_dict['bi'] =  np.zeros((1, out_dim))
 
     param_dict['wfx'] = np.zeros((in_dim, out_dim))
     param_dict['wfh'] = np.zeros((out_dim, out_dim))
-    param_dict['bf'] = 10. * np.ones((1, out_dim))
+    param_dict['bf'] = 100. * np.ones((1, out_dim))
 
     param_dict['wox'] = np.zeros((in_dim, out_dim))
     param_dict['woh'] = np.zeros((out_dim, out_dim))
-    param_dict['bo'] = 10. * np.ones((1, out_dim))
+    param_dict['bo'] = 100. * np.ones((1, out_dim))
 
     for key in param_dict:
         cell.set_config_by_name(key, param_dict[key])
 
 def assign_weight_count_from_2_stop_3(cell, in_dim, out_dim):
     param_dict = {}
-    param_dict['wgx'] = np.zeros((in_dim, out_dim))
+    input_count_num = [[100.] if i == 0 else [-0.] for i in range(10)]
+    input_gate_num = [[100.] if i == 2 else [-0.] for i in range(10)]
+    param_dict['wgx'] = np.concatenate((input_count_num, input_gate_num), axis=-1)
     param_dict['wgh'] = np.zeros((out_dim, out_dim))
-    param_dict['bg'] = 10. * np.ones((1, out_dim))
+    param_dict['bg'] = np.zeros((1, out_dim))
 
-    param_dict['wix'] = [[10.] if i == 0 else [-10.] for i in range(10)]
-    param_dict['wih'] = np.zeros((out_dim, out_dim))
+    input_count_num = [[-100.] if i == 0 else [-100.] for i in range(10)]
+    input_gate_num = [[100.] if i == 2 else [-100.] for i in range(10)]
+    param_dict['wix'] = np.concatenate((input_count_num, input_gate_num), axis=-1)
+    param_dict['wih'] = [[0., 0.], [200., 200.]]
     param_dict['bi'] =  np.zeros((1, out_dim))
 
-    param_dict['wfx'] = [[10.] if i == 2 else [-10.] for i in range(10)]
-    param_dict['wfh'] = [[100.]]
+    input_count_num = [[-100.] if i == 3 else [100.] for i in range(10)]
+    input_gate_num = [[-100.] if i == 3 else [100.] for i in range(10)]
+    param_dict['wfx'] = np.concatenate((input_count_num, input_gate_num), axis=-1)
+    param_dict['wfh'] = np.zeros((out_dim, out_dim))
     param_dict['bf'] = np.zeros((1, out_dim))
 
     param_dict['wox'] = np.zeros((in_dim, out_dim))
     param_dict['woh'] = np.zeros((out_dim, out_dim))
-    param_dict['bo'] = 10. * np.ones((1, out_dim))
+    param_dict['bo'] = 100. * np.ones((1, out_dim))
 
     for key in param_dict:
         cell.set_config_by_name(key, param_dict[key])
 
 if __name__ == "__main__":
+    o_test_list = [1, 1, 0, 3, 0, 2, 0, 2, 0, 3, 0, 2, 4, 5, 0, 9, 0, 4]
+    test_list = one_hot(o_test_list, depth=10)
+    print('Input sequence: {}'.format(o_test_list))
+
+    # Count number of all the '0' in the sequence.
+    cell = LSTMcell(in_dim=10, out_dim=1, out_activation=identity)
+    assign_weight_count_all(cell, in_dim=10, out_dim=1)
+    prev_state = [0.]
+    for idx, d in enumerate(test_list):
+        # print(o_test_list[idx])
+        prev_state = cell.run_step([d], prev_state=prev_state)
+        # print('state: {}'.format(np.squeeze(prev_state)))
+    print('Number of 0: {}'.format(int(np.squeeze(prev_state))))
+
+    # Count number of '0' after the first '2' in the sequence.
     cell = LSTMcell(in_dim=10, out_dim=2, out_activation=identity)
     assign_weight_count_from_2(cell, in_dim=10, out_dim=2)
-    # cell.display_param()
-    # x = [[1 if i == 2 else 0 for i in range(10)]]
-    # count = cell.run_step(x, prev_state=[1.])
-
-    # x = [[1 if i == 0 else 0 for i in range(10)]]
-    # count = cell.run_step(x, prev_state=[1.])
-
-    # test_list = [1,1,0,0,1,1,1,2,0,3,0,0,2,4,0,1,9,0,2,1]
-    test_list = [1,1,0,0,2,0, 2]
-
-    test_list = one_hot(test_list, depth=10)
-
     prev_state = [0., 0.]
-    for d in test_list:
-        # print(d)
+    for idx, d in enumerate(test_list):
         prev_state = cell.run_step([d], prev_state=prev_state)
-        # print(prev_state)
-        # print('state: {}'.format(np.squeeze(prev_state)))
+    print('Number of 0 after the first 2: {}'.format(int(prev_state[0][0])))
 
-
-
-
-
-
-
+    # Count number of '0' in the sequence when receive '2', but erase
+    # the counting when receive '3', and continue to count '0' from 0
+    # until receive another '2'.
+    cell = LSTMcell(in_dim=10, out_dim=2, out_activation=identity)
+    assign_weight_count_from_2_stop_3(cell, in_dim=10, out_dim=2)
+    prev_state = [0., 0.]
+    for idx, d in enumerate(test_list):
+        prev_state = cell.run_step([d], prev_state=prev_state)
+    print('Number of 0 after 2 but erase by 3: {}'.format(int(prev_state[0][0])))
